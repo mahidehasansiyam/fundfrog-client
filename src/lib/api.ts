@@ -33,4 +33,11 @@ export const campaignsApi = {
   remove: (id: string) => api.delete(`/api/campaigns/${id}`),
 };
 
+export const creatorApi = {
+  stats: () => api.get('/api/creator/stats'),
+  pendingContributions: () => api.get('/api/creator/pending-contributions'),
+  approveContribution: (id: string) => api.patch(`/api/contributions/${id}/approve`, {}),
+  rejectContribution: (id: string) => api.patch(`/api/contributions/${id}/reject`, {}),
+};
+
 export default api;
