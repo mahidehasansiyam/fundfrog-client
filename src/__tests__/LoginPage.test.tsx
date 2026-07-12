@@ -11,7 +11,7 @@ vi.mock('next/navigation', () => ({
 vi.mock('@react-oauth/google', () => ({
   useGoogleLogin: vi.fn((config) => {
     // Store the config for test access
-    (globalThis as any).__googleLoginConfig = config;
+    (globalThis as Record<string, unknown>).__googleLoginConfig = config;
     return () => {}; // Returning a function (the callback trigger)
   }),
 }));
@@ -36,7 +36,7 @@ import LoginPage from '@/app/(auth)/login/page';
 describe('LoginPage — spec-based tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (globalThis as any).__googleLoginConfig = null;
+    (globalThis as Record<string, unknown>).__googleLoginConfig = null;
   });
 
   it('should render email input, password input, and submit button', () => {

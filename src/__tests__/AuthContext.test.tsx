@@ -9,8 +9,8 @@ const mockApiPost = vi.fn();
 
 vi.mock('@/lib/api', () => ({
   default: {
-    get: (...args: any[]) => mockApiGet(...args),
-    post: (...args: any[]) => mockApiPost(...args),
+    get: (...args: Parameters<typeof mockApiGet>) => mockApiGet(...args),
+    post: (...args: Parameters<typeof mockApiPost>) => mockApiPost(...args),
   },
 }));
 
