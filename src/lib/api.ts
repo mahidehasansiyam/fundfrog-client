@@ -49,6 +49,10 @@ export const supporterApi = {
     api.get(`/api/contributions?page=${page}&limit=${limit}`),
 };
 
+export const paymentsApi = {
+  createCheckout: (credits: number) => api.post('/api/payments/create-checkout', { credits }),
+};
+
 export const adminApi = {
   stats: () => api.get('/api/admin/stats'),
   pendingCampaigns: () => api.get('/api/admin/pending-campaigns'),
