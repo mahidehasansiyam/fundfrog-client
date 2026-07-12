@@ -22,4 +22,22 @@ const api = {
   delete: (endpoint: string) => request(endpoint, { method: 'DELETE' }),
 };
 
+export const campaignsApi = {
+  list: (params?: Record<string, string>) => {
+    const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+    return api.get(`/api/campaigns${qs}`);
+  },
+  get: (id: string) => api.get(`/api/campaigns/${id}`),
+  create: (data: Record<string, unknown>) => api.post('/api/campaigns', data),
+  update: (id: string, data: Record<string, unknown>) => api.put(`/api/campaigns/${id}`, data),
+  remove: (id: string) => api.delete(`/api/campaigns/${id}`),
+};
+
+export const creatorApi = {
+  stats: () => api.get('/api/creator/stats'),
+  pendingContributions: () => api.get('/api/creator/pending-contributions'),
+  approveContribution: (id: string) => api.patch(`/api/contributions/${id}/approve`, {}),
+  rejectContribution: (id: string) => api.patch(`/api/contributions/${id}/reject`, {}),
+};
+
 export default api;
