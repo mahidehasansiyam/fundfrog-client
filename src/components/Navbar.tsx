@@ -29,14 +29,12 @@ export default function Navbar() {
 
           {user ? (
             <div className="flex items-center gap-4">
-              {user.role === 'creator' && (
-                <Link
-                  href="/dashboard/creator"
-                  className="font-medium text-text-secondary transition-colors hover:text-primary"
-                >
-                  Dashboard
-                </Link>
-              )}
+              <Link
+                href={user.role === 'creator' ? '/dashboard/creator' : '/dashboard/supporter'}
+                className="font-medium text-text-secondary transition-colors hover:text-primary"
+              >
+                Dashboard
+              </Link>
               <span className="text-sm font-medium text-foreground">
                 {user.name}
               </span>
@@ -88,15 +86,13 @@ export default function Navbar() {
 
             {user ? (
               <>
-                {user.role === 'creator' && (
-                  <Link
-                    href="/dashboard/creator"
-                    className="font-medium text-text-secondary transition-colors hover:text-primary"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
-                )}
+                <Link
+                  href={user.role === 'creator' ? '/dashboard/creator' : '/dashboard/supporter'}
+                  className="font-medium text-text-secondary transition-colors hover:text-primary"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
                 <span className="font-medium text-foreground">{user.name}</span>
                 <button
                   onClick={() => {

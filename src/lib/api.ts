@@ -40,4 +40,13 @@ export const creatorApi = {
   rejectContribution: (id: string) => api.patch(`/api/contributions/${id}/reject`, {}),
 };
 
+export const supporterApi = {
+  stats: () => api.get('/api/supporter/stats'),
+  approvedContributions: () => api.get('/api/supporter/approved-contributions'),
+  createContribution: (campaignId: string, amount: number) =>
+    api.post('/api/contributions', { campaignId, amount }),
+  myContributions: (page = 1, limit = 10) =>
+    api.get(`/api/contributions?page=${page}&limit=${limit}`),
+};
+
 export default api;
