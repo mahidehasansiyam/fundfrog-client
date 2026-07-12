@@ -4,6 +4,7 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
+import NotificationBell from '@/components/NotificationBell';
 import {
   HiOutlineChartBar,
   HiOutlineBadgeCheck,
@@ -123,6 +124,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
           </button>
           <div className="flex-1" />
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <span className="text-sm text-gray-500 hidden sm:block">{user?.email}</span>
             <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-sm font-bold lg:hidden">
               {user?.name?.charAt(0)?.toUpperCase() || 'A'}
