@@ -53,6 +53,11 @@ export const paymentsApi = {
   createCheckout: (credits: number) => api.post('/api/payments/create-checkout', { credits }),
 };
 
+export const notificationsApi = {
+  list: () => api.get('/api/notifications'),
+  markRead: (id: string) => api.patch(`/api/notifications/${id}/read`, {}),
+};
+
 export const adminApi = {
   stats: () => api.get('/api/admin/stats'),
   pendingCampaigns: () => api.get('/api/admin/pending-campaigns'),
