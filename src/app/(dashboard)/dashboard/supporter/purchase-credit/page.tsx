@@ -1,8 +1,10 @@
 'use client';
 
 import { useAuth } from '@/lib/AuthContext';
+import { paymentsApi } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 const creditPackages = [
   { credits: 100, price: 10, popular: false },
@@ -14,6 +16,7 @@ const creditPackages = [
 export default function PurchaseCreditPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [buying, setBuying] = useState<number | null>(null);
 
   useEffect(() => {
     if (loading) return;
@@ -22,6 +25,19 @@ export default function PurchaseCreditPage() {
       return;
     }
   }, [user, loading, router]);
+
+  const handlePurchase = async (credits: number) => {
+    setBuying(credits);
+    try {
+      const data = await paymentsApi.createCheckout(credits);
+      toast.loading('Redirecting to Stripe...');
+      window.location.assign(data.url);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Purchase failed';
+      toast.error(message);
+      setBuying(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -60,11 +76,15 @@ export default function PurchaseCreditPage() {
                 ${(pkg.price / pkg.credits).toFixed(2)} per credit
               </p>
               <button
-                disabled
-                className="w-full px-4 py-2.5 rounded-lg text-sm font-medium bg-[#1c1c24] text-gray-500 border border-[#2a2a35] cursor-not-allowed"
-                title="Coming soon"
+                onClick={() => handlePurchase(pkg.credits)}
+                disabled={buying !== null}
+                className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  buying === pkg.credits
+                    ? 'bg-emerald-500/20 text-emerald-400 cursor-wait'
+                    : 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30'
+                }`}
               >
-                Coming Soon
+                {buying === pkg.credits ? 'Processing...' : `Buy $${pkg.price}`}
               </button>
             </div>
           </div>
@@ -73,7 +93,7 @@ export default function PurchaseCreditPage() {
 
       <div className="rounded-xl border border-[#2a2a35] bg-[#16161e] p-5">
         <p className="text-sm text-gray-400">
-          💳 Credit card payments powered by Stripe. Your credits are available immediately after purchase.
+          Credit card payments powered by Stripe. Your credits are available immediately after purchase.
           Minimum purchase: 100 credits ($10).
         </p>
       </div>

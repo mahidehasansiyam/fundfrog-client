@@ -49,4 +49,25 @@ export const supporterApi = {
     api.get(`/api/contributions?page=${page}&limit=${limit}`),
 };
 
+export const paymentsApi = {
+  createCheckout: (credits: number) => api.post('/api/payments/create-checkout', { credits }),
+};
+
+export const adminApi = {
+  stats: () => api.get('/api/admin/stats'),
+  pendingCampaigns: () => api.get('/api/admin/pending-campaigns'),
+  approveCampaign: (id: string) => api.patch(`/api/campaigns/${id}/approve`, {}),
+  rejectCampaign: (id: string) => api.patch(`/api/campaigns/${id}/reject`, {}),
+  pendingWithdrawals: () => api.get('/api/admin/pending-withdrawals'),
+  approveWithdrawal: (id: string) => api.patch(`/api/withdrawals/${id}/approve`, {}),
+  users: () => api.get('/api/users'),
+  updateUserRole: (id: string, role: string) => api.patch(`/api/users/${id}`, { role }),
+  deleteUser: (id: string) => api.delete(`/api/users/${id}`),
+  deleteCampaign: (id: string) => api.delete(`/api/campaigns/${id}/admin`),
+  reports: () => api.get('/api/reports'),
+  submitReport: (campaignId: string, campaignTitle: string, reason: string) =>
+    api.post('/api/reports', { campaignId, campaignTitle, reason }),
+  suspendCampaign: (id: string) => api.delete(`/api/campaigns/${id}/suspend`),
+};
+
 export default api;
