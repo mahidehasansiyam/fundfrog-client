@@ -103,7 +103,7 @@ export default function MyCampaignsPage() {
         </div>
       ) : (
         <div className="rounded-xl border border-[#2a2a35] bg-[#16161e] overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="responsive-table overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2a2a35] text-gray-400">
@@ -119,19 +119,19 @@ export default function MyCampaignsPage() {
               <tbody>
                 {campaigns.map((c) => (
                   <tr key={c._id} className="border-b border-[#2a2a35] last:border-0 hover:bg-[#1c1c24]">
-                    <td className="px-5 py-3 text-white font-medium">{c.title}</td>
-                    <td className="px-5 py-3 text-gray-400">{c.category}</td>
-                    <td className="px-5 py-3 text-gray-300">{c.fundingGoal}</td>
-                    <td className="px-5 py-3 text-emerald-400">{c.amountRaised}</td>
-                    <td className="px-5 py-3">
+                    <td data-label="Title" className="px-5 py-3 text-white font-medium">{c.title}</td>
+                    <td data-label="Category" className="px-5 py-3 text-gray-400">{c.category}</td>
+                    <td data-label="Goal" className="px-5 py-3 text-gray-300">{c.fundingGoal}</td>
+                    <td data-label="Raised" className="px-5 py-3 text-emerald-400">{c.amountRaised}</td>
+                    <td data-label="Status" className="px-5 py-3">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusBadge(c.status)}`}>
                         {c.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-gray-400">
+                    <td data-label="Deadline" className="px-5 py-3 text-gray-400">
                       {new Date(c.deadline).toLocaleDateString()}
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td data-label="Actions" className="px-5 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => router.push(`/dashboard/creator/add-campaign?edit=${c._id}`)}

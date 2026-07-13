@@ -107,7 +107,7 @@ export default function SupporterDashboardHome() {
             No approved contributions yet
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2a2a35] text-gray-400">
@@ -120,12 +120,12 @@ export default function SupporterDashboardHome() {
               <tbody>
                 {approved.map((c) => (
                   <tr key={c._id} className="border-b border-[#2a2a35] last:border-0 hover:bg-[#1c1c24]">
-                    <td className="px-5 py-3 text-white">{c.campaignTitle}</td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">{c.amount}</td>
-                    <td className="px-5 py-3 text-gray-400">
+                    <td data-label="Campaign" className="px-5 py-3 text-white">{c.campaignTitle}</td>
+                    <td data-label="Amount" className="px-5 py-3 text-emerald-400 font-medium">{c.amount}</td>
+                    <td data-label="Date" className="px-5 py-3 text-gray-400">
                       {new Date(c.date).toLocaleDateString()}
                     </td>
-                    <td className="px-5 py-3">
+                    <td data-label="Status" className="px-5 py-3">
                       <span className="px-2 py-1 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                         {c.status}
                       </span>

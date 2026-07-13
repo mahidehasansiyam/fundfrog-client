@@ -57,7 +57,7 @@ export default function PaymentHistoryPage() {
             <p className="text-sm mt-1">Credit purchases will appear here</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2a2a35] text-gray-400">
@@ -70,10 +70,10 @@ export default function PaymentHistoryPage() {
               <tbody>
                 {payments.map((p) => (
                   <tr key={p._id} className="border-b border-[#2a2a35] last:border-0 hover:bg-[#1c1c24]">
-                    <td className="px-5 py-3 text-emerald-400 font-medium">+{p.creditsPurchased}</td>
-                    <td className="px-5 py-3 text-white">${((p.amountPaid || 0) / 100).toFixed(2)}</td>
-                    <td className="px-5 py-3 text-gray-400">{new Date(p.date).toLocaleDateString()}</td>
-                    <td className="px-5 py-3 text-gray-500 text-xs font-mono">{p.stripeSessionId?.slice(0, 16)}...</td>
+                    <td data-label="Credits" className="px-5 py-3 text-emerald-400 font-medium">+{p.creditsPurchased}</td>
+                    <td data-label="Amount Paid" className="px-5 py-3 text-white">${((p.amountPaid || 0) / 100).toFixed(2)}</td>
+                    <td data-label="Date" className="px-5 py-3 text-gray-400">{new Date(p.date).toLocaleDateString()}</td>
+                    <td data-label="Transaction ID" className="px-5 py-3 text-gray-500 text-xs font-mono">{p.stripeSessionId?.slice(0, 16)}...</td>
                   </tr>
                 ))}
               </tbody>

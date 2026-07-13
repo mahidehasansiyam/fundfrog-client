@@ -82,7 +82,7 @@ export default function ManageCampaignsPage() {
         </select>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="responsive-table overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[#2a2a3a]">
@@ -97,21 +97,21 @@ export default function ManageCampaignsPage() {
           <tbody>
             {campaigns.map((c) => (
               <tr key={c._id} className="border-b border-[#1a1a28] hover:bg-[#0f0f18]">
-                <td className="py-3 px-4">
+                <td data-label="Campaign" className="py-3 px-4">
                   <span className="text-white">{c.title}</span>
                   <span className="text-gray-600 text-xs ml-2">{c.category}</span>
                 </td>
-                <td className="py-3 px-4 text-gray-400">{c.creatorName || c.creatorEmail}</td>
-                <td className="py-3 px-4 text-white">
+                <td data-label="Creator" className="py-3 px-4 text-gray-400">{c.creatorName || c.creatorEmail}</td>
+                <td data-label="Raised" className="py-3 px-4 text-white">
                   {c.amountRaised.toLocaleString()} / {c.fundingGoal.toLocaleString()}
                 </td>
-                <td className="py-3 px-4">
+                <td data-label="Status" className="py-3 px-4">
                   <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium border ${statusBadge(c.status)}`}>
                     {c.status}
                   </span>
                 </td>
-                <td className="py-3 px-4 text-gray-500">{new Date(c.createdAt).toLocaleDateString()}</td>
-                <td className="py-3 px-4 text-right">
+                <td data-label="Created" className="py-3 px-4 text-gray-500">{new Date(c.createdAt).toLocaleDateString()}</td>
+                <td data-label="Actions" className="py-3 px-4 text-right">
                   <button
                     onClick={() => handleDelete(c._id)}
                     className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-medium hover:bg-red-500/20 transition-colors"

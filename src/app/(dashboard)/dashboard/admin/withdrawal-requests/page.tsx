@@ -63,7 +63,7 @@ export default function WithdrawalRequestsPage() {
           <p className="text-gray-500 text-sm">No pending withdrawal requests</p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="responsive-table overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-[#2a2a3a]">
@@ -79,16 +79,16 @@ export default function WithdrawalRequestsPage() {
             <tbody>
               {withdrawals.map((w) => (
                 <tr key={w._id} className="border-b border-[#1a1a28] hover:bg-[#0f0f18]">
-                  <td className="py-3 px-4">
+                  <td data-label="Creator" className="py-3 px-4">
                     <p className="text-white">{w.creatorName}</p>
                     <p className="text-gray-500 text-xs">{w.creatorEmail}</p>
                   </td>
-                  <td className="py-3 px-4 text-white">{w.withdrawalCredit.toLocaleString()}</td>
-                  <td className="py-3 px-4 text-emerald-400">${w.withdrawalAmount.toFixed(2)}</td>
-                  <td className="py-3 px-4 text-gray-300 capitalize">{w.paymentSystem}</td>
-                  <td className="py-3 px-4 text-gray-300 font-mono text-xs">{w.accountNumber}</td>
-                  <td className="py-3 px-4 text-gray-500">{new Date(w.date).toLocaleDateString()}</td>
-                  <td className="py-3 px-4 text-right">
+                  <td data-label="Credits" className="py-3 px-4 text-white">{w.withdrawalCredit.toLocaleString()}</td>
+                  <td data-label="Amount" className="py-3 px-4 text-emerald-400">${w.withdrawalAmount.toFixed(2)}</td>
+                  <td data-label="Payment" className="py-3 px-4 text-gray-300 capitalize">{w.paymentSystem}</td>
+                  <td data-label="Account" className="py-3 px-4 text-gray-300 font-mono text-xs">{w.accountNumber}</td>
+                  <td data-label="Date" className="py-3 px-4 text-gray-500">{new Date(w.date).toLocaleDateString()}</td>
+                  <td data-label="Action" className="py-3 px-4 text-right">
                     <button
                       onClick={() => handleApprove(w._id)}
                       className="px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-medium hover:bg-emerald-500/20 transition-colors"

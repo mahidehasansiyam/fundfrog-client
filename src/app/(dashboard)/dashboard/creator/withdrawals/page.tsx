@@ -187,7 +187,7 @@ export default function WithdrawalsPage() {
             No withdrawal history yet
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2a2a35] text-gray-400">
@@ -202,12 +202,12 @@ export default function WithdrawalsPage() {
               <tbody>
                 {history.map((w) => (
                   <tr key={w._id} className="border-b border-[#2a2a35] last:border-0 hover:bg-[#1c1c24]">
-                    <td className="px-5 py-3 text-white">{w.withdrawalCredit}</td>
-                    <td className="px-5 py-3 text-gray-300">${w.withdrawalAmount.toFixed(2)}</td>
-                    <td className="px-5 py-3 text-gray-400 capitalize">{w.paymentSystem}</td>
-                    <td className="px-5 py-3 text-gray-400">{w.accountNumber}</td>
-                    <td className="px-5 py-3 text-gray-400">{new Date(w.date).toLocaleDateString()}</td>
-                    <td className="px-5 py-3">
+                    <td data-label="Credits" className="px-5 py-3 text-white">{w.withdrawalCredit}</td>
+                    <td data-label="Amount" className="px-5 py-3 text-gray-300">${w.withdrawalAmount.toFixed(2)}</td>
+                    <td data-label="System" className="px-5 py-3 text-gray-400 capitalize">{w.paymentSystem}</td>
+                    <td data-label="Account" className="px-5 py-3 text-gray-400">{w.accountNumber}</td>
+                    <td data-label="Date" className="px-5 py-3 text-gray-400">{new Date(w.date).toLocaleDateString()}</td>
+                    <td data-label="Status" className="px-5 py-3">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border ${statusStyles[w.status] || ''}`}>
                         {w.status}
                       </span>

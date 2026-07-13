@@ -145,7 +145,7 @@ export default function CreatorDashboardHome() {
             No pending contributions
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[#2a2a35] text-gray-400">
@@ -159,13 +159,13 @@ export default function CreatorDashboardHome() {
               <tbody>
                 {pending.map((c) => (
                   <tr key={c._id} className="border-b border-[#2a2a35] last:border-0 hover:bg-[#1c1c24]">
-                    <td className="px-5 py-3 text-white">{c.supporterName}</td>
-                    <td className="px-5 py-3 text-gray-300">{c.campaignTitle}</td>
-                    <td className="px-5 py-3 text-emerald-400 font-medium">{c.amount}</td>
-                    <td className="px-5 py-3 text-gray-400">
+                    <td data-label="Supporter" className="px-5 py-3 text-white">{c.supporterName}</td>
+                    <td data-label="Campaign" className="px-5 py-3 text-gray-300">{c.campaignTitle}</td>
+                    <td data-label="Amount" className="px-5 py-3 text-emerald-400 font-medium">{c.amount}</td>
+                    <td data-label="Date" className="px-5 py-3 text-gray-400">
                       {new Date(c.date).toLocaleDateString()}
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td data-label="Actions" className="px-5 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleApprove(c._id)}

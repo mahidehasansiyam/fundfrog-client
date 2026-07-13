@@ -67,7 +67,7 @@ export default function ManageUsersPage() {
       <h1 className="text-2xl font-bold text-white mb-1">Manage Users</h1>
       <p className="text-gray-500 text-sm mb-6">View, update roles, and remove users</p>
 
-      <div className="overflow-x-auto">
+      <div className="responsive-table overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[#2a2a3a]">
@@ -82,7 +82,7 @@ export default function ManageUsersPage() {
           <tbody>
             {users.map((u) => (
               <tr key={u.id} className="border-b border-[#1a1a28] hover:bg-[#0f0f18]">
-                <td className="py-3 px-4">
+                <td data-label="User" className="py-3 px-4">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-xs font-bold">
                       {u.name.charAt(0).toUpperCase()}
@@ -90,8 +90,8 @@ export default function ManageUsersPage() {
                     <span className="text-white">{u.name}</span>
                   </div>
                 </td>
-                <td className="py-3 px-4 text-gray-400">{u.email}</td>
-                <td className="py-3 px-4">
+                <td data-label="Email" className="py-3 px-4 text-gray-400">{u.email}</td>
+                <td data-label="Role" className="py-3 px-4">
                   <select
                     value={u.role}
                     onChange={(e) => handleRoleChange(u.id, e.target.value)}
@@ -102,11 +102,11 @@ export default function ManageUsersPage() {
                     <option value="admin">Admin</option>
                   </select>
                 </td>
-                <td className="py-3 px-4 text-white">{u.credits.toLocaleString()}</td>
-                <td className="py-3 px-4 text-gray-500">
+                <td data-label="Credits" className="py-3 px-4 text-white">{u.credits.toLocaleString()}</td>
+                <td data-label="Joined" className="py-3 px-4 text-gray-500">
                   {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}
                 </td>
-                <td className="py-3 px-4 text-right">
+                <td data-label="Actions" className="py-3 px-4 text-right">
                   <button
                     onClick={() => handleDelete(u.id)}
                     className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-medium hover:bg-red-500/20 transition-colors"
