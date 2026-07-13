@@ -104,9 +104,21 @@ The client proxies `/api/*` to `http://localhost:9000/api/*` via Next.js rewrite
 
 MongoDB database: `fundfrog`. Collections: `users`, `campaigns`, `contributions`, `reports`, `withdrawals`, `payments`, `notifications`.
 
+## Demo Credentials
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | `admin@gmail.com` | `Password` |
+| Creator | `creator@gmail.com` | `Password` |
+| Creator | `creator1@gmail.com` | `Password` |
+| Creator | `creator2@gmail.com` | `Password` |
+| Supporter | `supporter@gmail.com` | `Password` |
+| Supporter | `supporter1@gmail.com` | `Password` |
+| Supporter | `supporter2@gmail.com` | `Password` |
+
 ## Admin Access
 
-Create an admin user directly in MongoDB:
+Or create an admin user directly in MongoDB:
 
 ```javascript
 db.users.insertOne({
