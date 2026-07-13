@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FundFrog — Crowdfunding for Changemakers
 
-## Getting Started
+A crowdfunding platform where supporters fund campaigns they believe in and creators bring their ideas to life.
 
-First, run the development server:
+## Tech Stack
+
+| Layer | Stack |
+|-------|-------|
+| Frontend | Next.js 16, React 19, Tailwind CSS 4, TypeScript |
+| Backend | Express 5 (CommonJS), MongoDB driver v7 |
+| Auth | JWT (httpOnly cookie), Google OAuth |
+| Payments | Stripe Checkout (via Next.js Route Handlers) |
+| Testing | Vitest, @testing-library/react, jsdom |
+
+## Prerequisites
+
+- Node.js 22+
+- npm 10+
+- MongoDB Atlas URI (or local MongoDB)
+- Stripe account (test mode)
+- Google OAuth Client ID
+
+## Setup
+
+### 1. Clone and install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Client
+cd client
+npm install
+
+# Server
+cd ../server
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to the appropriate locations:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Server (`server/.env`)**
 
-## Learn More
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Server port (default 9000) |
+| `MONGOBD_URI` | MongoDB connection string (note: missing `N` in `MONGOBD`) |
+| `JWT_SECRET` | Secret for signing JWT tokens |
+| `INTERNAL_API_KEY` | Shared secret for server-to-server calls |
 
-To learn more about Next.js, take a look at the following resources:
+**Client (`client/.env`)**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key |
+| `STRIPE_SECRET_KEY` | Stripe secret key |
+| `JWT_SECRET` | Must match the server's value |
+| `INTERNAL_API_KEY` | Must match the server's value |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Run
 
-## Deploy on Vercel
+```bash
+# Terminal 1 — Server (port 9000)
+cd server
+npm run dev
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Terminal 2 — Client (port 3000)
+cd client
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The client proxies `/api/*` to `http://localhost:9000/api/*` via Next.js rewrites.
+
+## Available Commands
+
+### Client (`client/`)
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Dev server (port 3000) |
+| `npm run build` | Production build |
+| `npm start` | Production server |
+| `npm run lint` | ESLint |
+| `npm test` | Vitest run |
+| `npx tsc --noEmit` | TypeScript typecheck |
+
+### Server (`server/`)
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | `node index.js` |
+| `npm run dev` | `nodemon index.js` (requires global `nodemon`) |
+| `npm test` | Vitest run |
+
+## Architecture
+
+- **Two independent repos** — `client/` and `server/` each have their own `.git`, `package.json`, and dependencies.
+- **Auth**: httpOnly cookie only. No localStorage tokens. Session restored on mount via `GET /api/auth/me`.
+- **Roles**: `supporter`, `creator`, `admin`. Enforced via `requireRole()` middleware on the server.
+- **Payments**: Stripe Checkout Sessions created via Next.js Route Handlers (not Express). Server has an internal-only `/api/payments/verify` endpoint gated by `x-internal-key`.
+- **Credit system**: 10 credits = $1 purchase. 20 credits = $1 withdrawal. Minimum withdrawal: 200 credits.
+
+## Database
+
+MongoDB database: `fundfrog`. Collections: `users`, `campaigns`, `contributions`, `reports`, `withdrawals`, `payments`, `notifications`.
+
+## Admin Access
+
+Create an admin user directly in MongoDB:
+
+```javascript
+db.users.insertOne({
+  name: "Admin",
+  email: "admin@fundfrog.com",
+  password: "<bcrypt-hashed-password>",
+  role: "admin",
+  credits: 0,
+  createdAt: new Date()
+})
+```
+
+## Testing
+
+```bash
+# Client tests
+cd client && npm test
+
+# Server tests
+cd server && npm test
+```
+
+Server tests follow a spec-driven pattern — each test file creates an in-memory Express app duplicating the route logic and mocks MongoDB collections. No real database needed.

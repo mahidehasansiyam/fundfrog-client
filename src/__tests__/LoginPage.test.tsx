@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
 }));
 
 // Mock @react-oauth/google
@@ -87,7 +87,7 @@ describe('LoginPage — spec-based tests', () => {
   it('should call login with email and password on form submit and redirect', async () => {
     const mockPush = vi.fn();
     // Override the router mock for this test
-    vi.mocked(await import('next/navigation')).useRouter = () => ({ push: mockPush });
+    vi.mocked((await import('next/navigation')) as Record<string, unknown>).useRouter = () => ({ push: mockPush });
 
     render(<LoginPage />);
 

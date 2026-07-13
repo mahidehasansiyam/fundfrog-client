@@ -50,7 +50,7 @@ export default function CampaignDetailPage() {
     }).finally(() => {
       setFetching(false);
     });
-  }, [params.id]);
+  }, [params.id, router]);
 
   async function handleContribute(e: React.FormEvent) {
     e.preventDefault();

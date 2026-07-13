@@ -76,4 +76,10 @@ export const adminApi = {
   suspendCampaign: (id: string) => api.delete(`/api/campaigns/${id}/suspend`),
 };
 
+export const withdrawalsApi = {
+  create: (data: { credits: number; paymentSystem: string; accountNumber: string }) =>
+    api.post('/api/withdrawals', data),
+  history: () => api.get('/api/withdrawals'),
+};
+
 export default api;

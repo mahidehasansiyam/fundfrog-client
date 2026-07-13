@@ -41,13 +41,7 @@ export default function ExplorePage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 
-  useEffect(() => {
-    if (loading) return;
-    if (!user || user.role !== 'supporter') {
-      router.push('/login');
-      return;
-    }
-    setFetching(true);
+  function loadCampaigns() {
     const params: Record<string, string> = {};
     if (search) params.search = search;
     if (category) params.category = category;
@@ -58,6 +52,15 @@ export default function ExplorePage() {
     }).finally(() => {
       setFetching(false);
     });
+  }
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user || user.role !== 'supporter') {
+      router.push('/login');
+      return;
+    }
+    loadCampaigns();
   }, [user, loading, router, search, category]);
 
   if (loading) {
