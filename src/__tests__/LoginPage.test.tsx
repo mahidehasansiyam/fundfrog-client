@@ -19,12 +19,16 @@ vi.mock('@/lib/AuthContext', () => ({
   }),
 }));
 
+const { mockSocialSignIn } = vi.hoisted(() => ({
+  mockSocialSignIn: vi.fn(),
+}));
+
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
     useSession: () => ({ data: null, isPending: false }),
     signIn: {
       email: vi.fn(),
-      social: vi.fn(() => ({ data: null, error: null })),
+      social: mockSocialSignIn,
     },
     signUp: { email: vi.fn() },
     signOut: vi.fn(),
@@ -120,6 +124,21 @@ describe('LoginPage — spec-based tests', () => {
 
     await waitFor(() => {
       expect(submitButton).toBeDisabled();
+    });
+  });
+
+  it('should call authClient.signIn.social with google provider when Google button is clicked', async () => {
+    mockSocialSignIn.mockResolvedValue({ data: null, error: null });
+
+    render(<LoginPage />);
+
+    const googleButton = screen.getByRole('button', { name: /continue with google/i });
+    expect(googleButton).not.toBeDisabled();
+
+    fireEvent.click(googleButton);
+
+    await waitFor(() => {
+      expect(mockSocialSignIn).toHaveBeenCalledWith({ provider: 'google', callbackURL: '/' });
     });
   });
 });
