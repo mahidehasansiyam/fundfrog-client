@@ -51,6 +51,7 @@ export const supporterApi = {
 
 export const paymentsApi = {
   createCheckout: (credits: number) => api.post('/api/payments/create-checkout', { credits }),
+  history: () => api.get('/api/payments'),
 };
 
 export const notificationsApi = {
@@ -73,6 +74,12 @@ export const adminApi = {
   submitReport: (campaignId: string, campaignTitle: string, reason: string) =>
     api.post('/api/reports', { campaignId, campaignTitle, reason }),
   suspendCampaign: (id: string) => api.delete(`/api/campaigns/${id}/suspend`),
+};
+
+export const withdrawalsApi = {
+  create: (data: { credits: number; paymentSystem: string; accountNumber: string }) =>
+    api.post('/api/withdrawals', data),
+  history: () => api.get('/api/withdrawals'),
 };
 
 export default api;

@@ -34,7 +34,7 @@ interface Campaign {
 export default function CampaignDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [fetching, setFetching] = useState(true);
   const [amount, setAmount] = useState('');
@@ -50,7 +50,7 @@ export default function CampaignDetailPage() {
     }).finally(() => {
       setFetching(false);
     });
-  }, [params.id]);
+  }, [params.id, router]);
 
   async function handleContribute(e: React.FormEvent) {
     e.preventDefault();
@@ -76,6 +76,7 @@ export default function CampaignDetailPage() {
       await supporterApi.createContribution(campaign._id, contributionAmount);
       toast.success('Contribution submitted! Awaiting creator approval.');
       setAmount('');
+      refreshUser();
       campaignsApi.get(params.id as string).then((res) => {
         setCampaign(res.campaign);
       }).catch(() => {});
