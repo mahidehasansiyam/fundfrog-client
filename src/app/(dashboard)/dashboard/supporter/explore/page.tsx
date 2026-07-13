@@ -23,13 +23,14 @@ interface Campaign {
 }
 
 const categoryColors: Record<string, string> = {
-  technology: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  education: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  health: 'bg-green-500/10 text-green-400 border-green-500/30',
-  community: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  arts: 'bg-pink-500/10 text-pink-400 border-pink-500/30',
-  environment: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  business: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+  Technology: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  Education: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+  'Health & Wellness': 'bg-green-500/10 text-green-400 border-green-500/30',
+  Community: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'Arts & Culture': 'bg-pink-500/10 text-pink-400 border-pink-500/30',
+  Environment: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+  'Social Impact': 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+  Other: 'bg-gray-500/10 text-gray-400 border-gray-500/30',
 };
 
 export default function ExplorePage() {
@@ -46,24 +47,7 @@ export default function ExplorePage() {
       router.push('/login');
       return;
     }
-    const getCampaigns = async () => {
-      try {
-        const params: Record<string, string> = {};
-        if (search) params.search = search;
-        if (category) params.category = category;
-        const res = await campaignsApi.list(params);
-        setCampaigns(res.campaigns || []);
-      } catch {
-        toast.error('Failed to load campaigns');
-      } finally {
-        setFetching(false);
-      }
-    };
-    getCampaigns();
-  }, [user, loading, router]);
-
-  useEffect(() => {
-    if (!user) return;
+    setFetching(true);
     const params: Record<string, string> = {};
     if (search) params.search = search;
     if (category) params.category = category;
@@ -74,7 +58,7 @@ export default function ExplorePage() {
     }).finally(() => {
       setFetching(false);
     });
-  }, [search, category]);
+  }, [user, loading, router, search, category]);
 
   if (loading) {
     return (
@@ -105,13 +89,14 @@ export default function ExplorePage() {
           className="px-4 py-2.5 rounded-lg bg-[#16161e] border border-[#2a2a35] text-gray-300 focus:outline-none focus:border-emerald-500/50 transition-colors"
         >
           <option value="">All Categories</option>
-          <option value="technology">Technology</option>
-          <option value="education">Education</option>
-          <option value="health">Health</option>
-          <option value="community">Community</option>
-          <option value="arts">Arts</option>
-          <option value="environment">Environment</option>
-          <option value="business">Business</option>
+          <option value="Technology">Technology</option>
+          <option value="Arts & Culture">Arts & Culture</option>
+          <option value="Community">Community</option>
+          <option value="Education">Education</option>
+          <option value="Environment">Environment</option>
+          <option value="Health & Wellness">Health & Wellness</option>
+          <option value="Social Impact">Social Impact</option>
+          <option value="Other">Other</option>
         </select>
       </div>
 

@@ -51,6 +51,7 @@ export const supporterApi = {
 
 export const paymentsApi = {
   createCheckout: (credits: number) => api.post('/api/payments/create-checkout', { credits }),
+  history: () => api.get('/api/payments'),
 };
 
 export const notificationsApi = {

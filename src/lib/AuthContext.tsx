@@ -19,6 +19,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string, role: string, photoURL?: string) => Promise<void>;
   googleLogin: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,8 +65,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const res = await api.get('/api/auth/me');
+      if (res?.user) setUser(res.user);
+    } catch {
+      // ignore
+    }
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

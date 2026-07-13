@@ -21,7 +21,7 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-8 md:flex">
           <Link
-            href="/campaigns"
+            href="/dashboard/supporter/explore"
             className="font-medium text-text-secondary transition-colors hover:text-primary"
           >
             Explore Campaigns
@@ -77,7 +77,7 @@ export default function Navbar() {
         <div className="border-t border-border bg-surface px-4 pb-6 pt-4 md:hidden">
           <div className="flex flex-col gap-4">
             <Link
-              href="/campaigns"
+              href="/dashboard/supporter/explore"
               className="font-medium text-text-secondary transition-colors hover:text-primary"
               onClick={() => setMenuOpen(false)}
             >
