@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000';
 
 export async function GET(req: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
 
     const { credits, email, name } = session.metadata!;
 
-    const verifyRes = await fetch('http://localhost:9000/api/payments/verify', {
+    const verifyRes = await fetch(`${API_URL}/api/payments/verify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
