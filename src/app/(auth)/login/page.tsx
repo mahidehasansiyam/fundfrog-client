@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/lib/AuthContext';
+import { authClient } from '@/lib/auth-client';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { login, googleLogin } = useAuth();
+  const { login } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,24 +29,19 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogle = useGoogleLogin({
-    onSuccess: async (credentialResponse) => {
-      setError('');
-      setGoogleLoading(true);
-      try {
-        await googleLogin(credentialResponse.access_token);
-        router.push('/');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Google sign-in failed');
-      } finally {
-        setGoogleLoading(false);
-      }
-    },
-    onError: () => {
-      setError('Google sign-in failed');
-    },
-    flow: 'implicit',
-  });
+  const handleGoogle = async () => {
+    setError('');
+    setGoogleLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/',
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign-in failed');
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md">
@@ -62,7 +57,7 @@ export default function LoginPage() {
 
         <button
           type="button"
-          onClick={() => handleGoogle()}
+          onClick={handleGoogle}
           disabled={googleLoading}
           className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-surface px-5 py-2.5 font-medium text-foreground transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-60"
         >

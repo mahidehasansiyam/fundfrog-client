@@ -7,23 +7,28 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
 }));
 
-// Mock @react-oauth/google
-vi.mock('@react-oauth/google', () => ({
-  useGoogleLogin: vi.fn(() => () => {}),
-}));
-
 // Mock AuthContext
 const mockRegister = vi.fn();
-const mockGoogleLogin = vi.fn();
 vi.mock('@/lib/AuthContext', () => ({
   useAuth: () => ({
     user: null,
     loading: false,
     login: vi.fn(),
-    googleLogin: mockGoogleLogin,
     register: mockRegister,
     logout: vi.fn(),
   }),
+}));
+
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    useSession: () => ({ data: null, isPending: false }),
+    signIn: {
+      email: vi.fn(),
+      social: vi.fn(() => ({ data: null, error: null })),
+    },
+    signUp: { email: vi.fn() },
+    signOut: vi.fn(),
+  },
 }));
 
 import RegisterPage from '@/app/(auth)/register/page';

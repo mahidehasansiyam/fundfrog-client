@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useGoogleLogin } from '@react-oauth/google';
 import { useAuth } from '@/lib/AuthContext';
+import { authClient } from '@/lib/auth-client';
 
 const roles = [
   { value: 'supporter', label: 'Supporter', description: 'Fund campaigns you believe in' },
@@ -20,7 +20,7 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { register, googleLogin } = useAuth();
+  const { register } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,24 +37,19 @@ export default function RegisterPage() {
     }
   };
 
-  const handleGoogle = useGoogleLogin({
-    onSuccess: async (credentialResponse) => {
-      setError('');
-      setGoogleLoading(true);
-      try {
-        await googleLogin(credentialResponse.access_token);
-        router.push('/');
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Google sign-up failed');
-      } finally {
-        setGoogleLoading(false);
-      }
-    },
-    onError: () => {
-      setError('Google sign-up failed');
-    },
-    flow: 'implicit',
-  });
+  const handleGoogle = async () => {
+    setError('');
+    setGoogleLoading(true);
+    try {
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/',
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google sign-up failed');
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-md">
@@ -70,7 +65,7 @@ export default function RegisterPage() {
 
         <button
           type="button"
-          onClick={() => handleGoogle()}
+          onClick={handleGoogle}
           disabled={googleLoading}
           className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-surface px-5 py-2.5 font-medium text-foreground transition-colors hover:bg-background disabled:cursor-not-allowed disabled:opacity-60"
         >
@@ -141,9 +136,9 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters"
               required
-              minLength={6}
+              minLength={8}
               className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>

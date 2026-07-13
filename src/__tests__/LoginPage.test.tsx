@@ -7,27 +7,28 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), replace: vi.fn(), prefetch: vi.fn() }),
 }));
 
-// Mock @react-oauth/google
-vi.mock('@react-oauth/google', () => ({
-  useGoogleLogin: vi.fn((config) => {
-    // Store the config for test access
-    (globalThis as Record<string, unknown>).__googleLoginConfig = config;
-    return () => {}; // Returning a function (the callback trigger)
-  }),
-}));
-
 // Mock AuthContext
 const mockLogin = vi.fn();
-const mockGoogleLogin = vi.fn();
 vi.mock('@/lib/AuthContext', () => ({
   useAuth: () => ({
     user: null,
     loading: false,
     login: mockLogin,
-    googleLogin: mockGoogleLogin,
     register: vi.fn(),
     logout: vi.fn(),
   }),
+}));
+
+vi.mock('@/lib/auth-client', () => ({
+  authClient: {
+    useSession: () => ({ data: null, isPending: false }),
+    signIn: {
+      email: vi.fn(),
+      social: vi.fn(() => ({ data: null, error: null })),
+    },
+    signUp: { email: vi.fn() },
+    signOut: vi.fn(),
+  },
 }));
 
 // Now import the component after mocks are set up
@@ -36,7 +37,6 @@ import LoginPage from '@/app/(auth)/login/page';
 describe('LoginPage — spec-based tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (globalThis as Record<string, unknown>).__googleLoginConfig = null;
   });
 
   it('should render email input, password input, and submit button', () => {

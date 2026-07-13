@@ -1,15 +1,16 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import api from '@/lib/api';
+import { createContext, useContext, ReactNode, useCallback, useMemo } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 interface User {
   id: string;
   name: string;
   email: string;
-  photoURL: string;
+  image?: string | null;
   role: 'supporter' | 'creator' | 'admin';
   credits: number;
+  photoURL?: string;
 }
 
 interface AuthContextType {
@@ -17,65 +18,60 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role: string, photoURL?: string) => Promise<void>;
-  googleLogin: (credential: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+function toUser(sessionUser: Record<string, unknown> | undefined): User | null {
+  if (!sessionUser) return null;
+  return {
+    id: sessionUser.id as string,
+    name: sessionUser.name as string,
+    email: sessionUser.email as string,
+    image: sessionUser.image as string | null | undefined,
+    role: (sessionUser.role as User['role']) ?? 'supporter',
+    credits: (sessionUser.credits as number) ?? 0,
+    photoURL: ((sessionUser.photoURL as string) || (sessionUser.image as string) || '') as string,
+  };
+}
 
-  useEffect(() => {
-    api
-      .get('/api/auth/me')
-      .then((res) => {
-        if (res?.user) setUser(res.user);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const { data: session, isPending, refetch } = authClient.useSession();
+
+  const user = useMemo(() => toUser(session?.user as Record<string, unknown> | undefined), [session]);
+  const loading = isPending;
 
   const login = useCallback(async (email: string, password: string) => {
-    const data = await api.post('/api/auth/login', { email, password });
-    setUser(data.user);
+    const { error } = await authClient.signIn.email({ email, password });
+    if (error) throw new Error(error.message || 'Login failed');
   }, []);
 
   const register = useCallback(
     async (name: string, email: string, password: string, role: string, photoURL?: string) => {
-      const data = await api.post('/api/auth/register', { name, email, password, role, photoURL });
-      setUser(data.user);
+      const { error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        role,
+        image: photoURL,
+      } as never);
+      if (error) throw new Error(error.message || 'Registration failed');
     },
     [],
   );
 
-  const googleLogin = useCallback(async (accessToken: string) => {
-    const data = await api.post('/api/auth/google', { access_token: accessToken });
-    setUser(data.user);
-  }, []);
-
   const logout = useCallback(async () => {
-    try {
-      await api.post('/api/auth/logout', {});
-    } catch {
-      // ignore
-    }
-    setUser(null);
+    await authClient.signOut();
   }, []);
 
   const refreshUser = useCallback(async () => {
-    try {
-      const res = await api.get('/api/auth/me');
-      if (res?.user) setUser(res.user);
-    } catch {
-      // ignore
-    }
-  }, []);
+    await refetch();
+  }, [refetch]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
